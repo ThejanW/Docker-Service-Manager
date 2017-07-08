@@ -16,7 +16,7 @@
 #
 
 FROM jwilder/nginx-proxy
-MAINTAINER Apache Tika Team
+MAINTAINER ThejanW
 
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/master/

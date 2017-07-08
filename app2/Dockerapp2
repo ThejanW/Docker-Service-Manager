@@ -15,16 +15,14 @@
 # limitations under the License.
 #
 
-FROM jwilder/nginx-proxy
-MAINTAINER Apache Tika Team
+FROM ubuntu:16.04
+MAINTAINER ThejanW
 
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/app2/
 
 RUN \
-    wget https://raw.githubusercontent.com/ThejanW/tika/master/tika-parsers/src/main/resources/org/apache/tika/parser/captioning/tf/caption_generator.py \
-        -O caption_generator.py && \
-
+    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/app2/app2.py -O app2.py && \
     chmod +x app2.py
 
 WORKDIR /
