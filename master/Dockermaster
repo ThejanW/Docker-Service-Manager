@@ -17,22 +17,17 @@
 
 FROM jwilder/nginx-proxy
 MAINTAINER ThejanW
-
+RUN \
+    apt-get update && apt-get install -y python-pip python-dev wget && apt-get clean
+    pip install flask requests
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/master/
-
 RUN \
-    wget https://raw.githubusercontent.com/ThejanW/tika/master/tika-parsers/src/main/resources/org/apache/tika/parser/captioning/tf/caption_generator.py \
-        -O caption_generator.py && \
-
+    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/master/master.py -O master.py && \
     chmod +x master.py
-
 WORKDIR /
-
 # Add symbolic link to master.py
 RUN ln -s /usr/share/apache-tika/src/dl/master/master.py /usr/bin/master
-
 # expose API port, this is the default port
 EXPOSE 8764
-
 CMD master

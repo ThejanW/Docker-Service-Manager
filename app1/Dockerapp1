@@ -17,20 +17,17 @@
 
 FROM ubuntu:16.04
 MAINTAINER ThejanW
-
+RUN \
+    apt-get update && apt-get install -y python-pip python-dev wget && apt-get clean
+    pip install flask requests
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/app1/
-
 RUN \
     wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/app1/app1.py -O app1.py && \
     chmod +x app1.py
-
 WORKDIR /
-
 # Add symbolic link to app1.py
 RUN ln -s /usr/share/apache-tika/src/dl/app1/app1.py /usr/bin/app1
-
 # expose API port, this is the default port
 EXPOSE 8764
-
 CMD app1
