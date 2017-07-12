@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from utils import Utils
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response
+import json
 
 app = Flask(__name__)
 
@@ -19,6 +20,8 @@ SAMPLE_BASIC_RESPONSE = {
     }
 }
 
+utils = Utils()
+
 
 @app.route("/")
 def index():
@@ -30,20 +33,33 @@ def index():
 @app.route('/api/master/<mode>', methods=['GET', 'POST'])
 def container_utils(mode):
     content = request.get_json(silent=True)
+    response = {
+        "result": "",
+        "app": {
+            "name": "",
+            "status": ""
+        }
+    }
     if mode == 'basic':
         app_name = content['app']['name']
         app_action = content['app']['action']
+        response["app"]["name"] = app_name
         if app_action == 'start':
-            Utils().stop_containers(app_name)
-            Utils().start_container(app_name)
-            return "ok"
+            stopped = utils.stop_containers(app_name)
+            started = utils.start_container(app_name)
+            if stopped & started:  # return "OK"
+                response["result"] = "OK"
+                response["app"]["status"] = utils.check_status(app_name)
         elif app_action == "stop":
-            Utils().stop_containers(app_name)
-            return "ok"
-        else:
-            return "error"
-    else:
-        return "error"
+            stopped = utils.stop_containers(app_name)
+            if stopped:  # return "OK"
+                response["result"] = "OK"
+                response["app"]["status"] = utils.check_status(app_name)
+        else:  # return "ERROR"
+            response["result"] = "ERROR"
+        return Response(response=json.dumps(response), status=200, mimetype="application/json")
+    else:  # return "ERROR"
+        return "NOT SUPPORTED"
 
 
 if __name__ == '__main__':
