@@ -72,6 +72,6 @@ def container_utils(mode):
 
 
 if __name__ == '__main__':
-    port = "8500"
+    port = "8764"
     print("Serving on port %s" % port)
     app.run(host='0.0.0.0', port=port)

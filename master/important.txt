@@ -1,6 +1,7 @@
 sudo service docker restart
 docker build -f Dockermaster -t dockermaster .
 docker rm $(docker stop $(docker ps -a -q --filter ancestor=<image-name> --format="{{.ID}}"))
+docker run -d -p 8764:80 -v /var/run/docker.sock:/tmp/docker.sock:ro dockermaster
 
 docker run -d -p 8764:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
 
