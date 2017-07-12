@@ -17,7 +17,8 @@ class Utils(object):
 
     def start_container(self, image_name):
         try:
-            self.client.containers.run(image_name, detach=True, environment={'VIRTUAL_HOST': image_name + '.tika.dl'})
+            self.client.containers.run(image_name, detach=True, ports={'8764/tcp': 8764},
+                                       environment={'VIRTUAL_HOST': image_name + '.tika.dl'})
             return True
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
