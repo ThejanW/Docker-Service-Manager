@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import docker
 from docker import errors
 

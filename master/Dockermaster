@@ -18,12 +18,13 @@
 FROM jwilder/nginx-proxy
 MAINTAINER ThejanW
 RUN \
-    apt-get update && apt-get install -y python-pip python-dev wget && apt-get clean && \
-    pip install flask requests
+    apt-get update && apt-get install -y python3-pip python3-dev wget && apt-get clean && \
+    pip3 install flask requests docker
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/master/
 RUN \
     wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/master/master.py -O master.py && \
+    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/master/utils.py -O utils.py && \
     chmod +x master.py
 WORKDIR /
 # Add symbolic link to master.py

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from utils import Utils
 from flask import Flask, request, Response
 import json
