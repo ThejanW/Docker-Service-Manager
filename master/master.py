@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import docker
 from utils import Utils
 from flask import Flask, request, jsonify
 
@@ -29,14 +28,22 @@ def index():
 
 
 @app.route('/api/master/<mode>', methods=['GET', 'POST'])
-def add_message(mode):
+def container_utils(mode):
     content = request.get_json(silent=True)
-    if mode == "basic":
-        app_name = content["app"]["name"]
-        app_action = content["app"]["action"]
-        if app_action == "start":
-            response = Utils().start_container(app_name, "8081", "8881")
-            return response
+    if mode == 'basic':
+        app_name = content['app']['name']
+        app_action = content['app']['action']
+        if app_action == 'start':
+            Utils().stop_containers(app_name)
+            Utils().start_container(app_name)
+            return "ok"
+        elif app_action == "stop":
+            Utils().stop_containers(app_name)
+            return "ok"
+        else:
+            return "error"
+    else:
+        return "error"
 
 
 if __name__ == '__main__':

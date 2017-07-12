@@ -1,7 +1,10 @@
+sudo service docker restart
+docker rm $(docker stop $(docker ps -a -q --filter ancestor=<image-name> --format="{{.ID}}"))
+
 docker run -d -p 8764:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
 
-docker run -e VIRTUAL_HOST=im2txt.tika.dl im2txt-rest-tika
-docker run -e VIRTUAL_HOST=objrec.tika.dl inception-rest
+docker run -e VIRTUAL_HOST=app1.tika.dl app1
+docker run -e VIRTUAL_HOST=app2.tika.dl app2
 
-curl -H "Host: im2txt.tika.dl" localhost:8764/
-curl -H "Host: objrec.tika.dl" localhost:8764/
+curl -H "Host: app1.tika.dl" localhost:8764/
+curl -H "Host: app2.tika.dl" localhost:8764/
