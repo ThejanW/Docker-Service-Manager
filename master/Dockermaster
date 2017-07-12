@@ -30,5 +30,5 @@ WORKDIR /
 # Add symbolic link to master.py
 RUN ln -s /usr/share/apache-tika/src/dl/master/master.py /usr/bin/master
 # expose API port, this is the default port
-EXPOSE 8765
+EXPOSE 8764 8765
 CMD master
