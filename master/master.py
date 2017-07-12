@@ -12,6 +12,13 @@ SAMPLE_BASIC_POST = {
     }
 }
 
+SAMPLE_ADVANCED_POST = {
+    "app": {
+        "name": "",
+        "action": ""
+    }
+}
+
 SAMPLE_BASIC_RESPONSE = {
     "result": "OK",
     "app": {
@@ -58,7 +65,9 @@ def container_utils(mode):
         else:  # return "ERROR"
             response["result"] = "ERROR"
         return Response(response=json.dumps(response), status=200, mimetype="application/json")
-    else:  # return "ERROR"
+    elif mode == 'advanced':
+        return "advanced"
+    else:  # return "NOT SUPPORTED"
         return "NOT SUPPORTED"
 
 
