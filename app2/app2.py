@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import flask
 
-port = "8764"
-
 app = flask.Flask(__name__)
 
 
@@ -14,5 +12,6 @@ def index():
 
 
 if __name__ == '__main__':
+    port = "8764"
     print("Serving on port %s" % port)
     app.run(host='0.0.0.0', port=port)
