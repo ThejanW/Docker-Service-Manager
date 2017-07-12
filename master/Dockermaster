@@ -18,7 +18,7 @@
 FROM jwilder/nginx-proxy
 MAINTAINER ThejanW
 RUN \
-    apt-get update && apt-get install -y python3-pip python3-dev wget && apt-get clean && \
+    apt-get update && apt-get install -y python3-pip python3-dev wget nano && apt-get clean && \
     pip3 install flask requests docker
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/master/

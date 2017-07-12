@@ -18,7 +18,7 @@
 FROM ubuntu:16.04
 MAINTAINER ThejanW
 RUN \
-    apt-get update && apt-get install -y python-pip python-dev wget && apt-get clean && \
+    apt-get update && apt-get install -y python-pip python-dev wget nano && apt-get clean && \
     pip install flask requests
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/app1/
