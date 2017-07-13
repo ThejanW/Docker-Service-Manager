@@ -39,3 +39,13 @@ class Utils(object):
             return True
         except docker.errors.ImageNotFound:
             return False
+
+    def start_nginx(self, image_name='jwilder/nginx-proxy'):
+        try:
+            if self.check_status(image_name) != "RUNNING":
+                self.client.containers.run(image_name, detach=True,
+                                           volumes={'/var/run/docker.sock': {'bind': '/tmp/docker.sock', 'mode': 'ro'}},
+                                           ports={'80/tcp': 8764})
+            return True
+        except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
+            return False
