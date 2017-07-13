@@ -23,7 +23,7 @@ RUN \
 # Download server related source files
 WORKDIR /usr/share/apache-tika/src/dl/app3/
 RUN \
-    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/app3/app3.py -O app1.py && \
+    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/App3/app3.py -O app3.py && \
     chmod +x app3.py
 WORKDIR /
 # Add symbolic link to app3.py

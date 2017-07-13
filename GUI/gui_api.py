@@ -37,7 +37,7 @@ def index():
     return "I am GUI API"
 
 
-@app.route('/api/master/<mode>', methods=['GET', 'POST'])
+@app.route('/api/gui/<mode>', methods=['GET', 'POST'])
 def container_utils(mode):
     content = request.get_json(silent=True)
     response = {
