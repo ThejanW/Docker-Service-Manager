@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import json
-
 from flask import Flask, request, Response
 
-from Master.utils import Utils
+from utils import Utils
 
 app = Flask(__name__)
 
