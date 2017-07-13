@@ -27,8 +27,11 @@ RUN \
     wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/master/utils.py -O utils.py && \
     chmod +x master.py
 WORKDIR /app/
+RUN \
+    rm -rf Procfile && \
+    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/master/Procfile -O Procfile
 # Add symbolic link to master.py
 RUN ln -s /usr/share/apache-tika/src/dl/master/master.py /usr/bin/master
 # expose API port, this is the default port
-EXPOSE 8764 8765
+EXPOSE 8764
 CMD ["forego", "start", "-r"]
