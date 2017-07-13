@@ -34,7 +34,7 @@ utils = Utils()
 def index():
     """The index page which provide information about other API end points"""
 
-    return "I am master"
+    return "I am GUI API"
 
 
 @app.route('/api/master/<mode>', methods=['GET', 'POST'])
