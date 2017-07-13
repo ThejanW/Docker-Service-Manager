@@ -32,3 +32,10 @@ class Utils(object):
                 return "RUNNING"
             else:
                 return "NOT RUNNING, NOT STOPPED"
+
+    def search_container(self, image_name):
+        try:
+            self.client.images.get(image_name)
+            return True
+        except docker.errors.ImageNotFound:
+            return False
