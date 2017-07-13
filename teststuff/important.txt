@@ -15,11 +15,3 @@ curl -H "Host: app2.tika.dl" localhost:8764/
 
 docker run -e VIRTUAL_HOST=app2.tika.dl im2txt
 
-
-make a different docker as web_gui_tika_dl or something,have its dockerfile in repo,
-once we run the Dockermaster, we search the local repo and try to find the web_gui_tika_dl, if found, we can run it using a virtual host
-if we can't find it, we build the dockerfile, this can be automated using a bash script, or python??
-
-(problem is we can't have a server running on jwilder nginx, it is not convenient)
-
-web_gui_tika_dl container is simply be used to track virtual hosts and as a reverse proxy
