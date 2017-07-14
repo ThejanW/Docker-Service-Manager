@@ -18,17 +18,25 @@
 FROM ubuntu:16.04
 MAINTAINER ThejanW
 RUN \
-    apt-get update && apt-get install -y python3-pip python3-dev wget nano && apt-get clean && \
-    pip3 install flask requests docker
+    apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    python3-pip \
+    python3-dev \
+    wget \
+    nano && \
+    pip3 install \
+    flask \
+    requests \
+    docker
 # Download server related source files
-WORKDIR /usr/share/apache-tika/src/dl/GUI/
+WORKDIR /usr/share/apache-tika/src/dl/Master/
 RUN \
     wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/Master/gui_api.py -O gui_api.py && \
     wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/Master/utils.py -O utils.py && \
     chmod +x gui_api.py
 WORKDIR /
 # Add symbolic link to gui_api.py
-RUN ln -s /usr/share/apache-tika/src/dl/GUI/gui_api.py /usr/bin/gui_api
+RUN ln -s /usr/share/apache-tika/src/dl/Master/gui_api.py /usr/bin/gui_api
 # expose API port, this is the default port
 EXPOSE 8765
 CMD gui_api
