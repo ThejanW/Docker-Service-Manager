@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TIKA DL</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            namespace = '/test';
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('my_response', function (msg) {
+                $('#log').append('<br>' + $('<div/>').text(msg.data).html());
+            });
+
+            $('.services').each(function () {
+                var service = $(this).attr('id');
+                var start_stop = $('#start_stop_btn_' + service);
+                start_stop.click(function (event) {
+                    if (start_stop.val() == "START") {
+                        socket.emit('start', {service: service});
+                        start_stop.val("STOP");
+                    }
+                    else if (start_stop.val() == "STOP") {
+                        socket.emit('stop', {service: service});
+                        start_stop.val("START");
+                    }
+                    return false;
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+<h1>Docker Service Manager</h1>
+<div id="services">
+    {% for service in services %}
+    <div id={{service}} class="services">
+        <h3>Service Name: {{service}}</h3>
+        <h3>Service Status:</h3>
+        <input id="start_stop_btn_{{service}}" type="submit" value="START">
+    </div>
+    {% endfor %}
+
+    <div id="log"></div>
+</div>
+</body>
+</html>

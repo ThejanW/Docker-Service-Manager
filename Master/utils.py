@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import docker
 from docker import errors
+import json
+from io import BytesIO
 
 
 class Utils(object):
@@ -22,23 +24,24 @@ class Utils(object):
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
 
-    def check_status(self, image_name):
-        container_ids = self.client.containers.list(filters={'ancestor': image_name})
-        # when stopped and started there should be only one container in the container_ids list
-        if len(container_ids) == 0:
-            return "STOPPED"
-        else:
-            if container_ids[0].status == 'running':
-                return "RUNNING"
-            else:
-                return "NOT RUNNING, NOT STOPPED"
-
-    def search_container(self, image_name):
+    def search_container(self, image_name='jwilder/nginx-proxy'):
         try:
             self.client.images.get(image_name)
             return True
         except docker.errors.ImageNotFound:
             return False
+
+    def check_status(self, image_name):
+        if self.search_container(image_name):
+            container_ids = self.client.containers.list(filters={'ancestor': image_name})
+            # when stopped and started there should be only one container in the container_ids list
+            if len(container_ids) == 0:
+                return "STOPPED"
+            else:
+                if container_ids[0].status == 'running':
+                    return "RUNNING"
+        else:
+            return "NOT AVAILABLE"
 
     def start_nginx(self, image_name='jwilder/nginx-proxy'):
         try:
@@ -49,3 +52,28 @@ class Utils(object):
             return True
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
+
+
+class AdvancedUtils(object):
+    def __init__(self, base_url='unix://var/run/docker.sock'):
+        self.client = docker.APIClient(base_url)
+
+    def pull_container_from_hub(self, image_name='jwilder/nginx-proxy:latest'):
+        image_name = 'alpine:latest'
+        try:
+            for line in self.client.pull(image_name, stream=True):
+                j_line = json.loads(line.decode('utf-8'))
+                if j_line["status"] == "Downloading":
+                    j_progress_details = j_line["progressDetail"]
+                    print(j_progress_details["current"] * 100 / j_progress_details["total"])
+                    print(j_line["progress"])
+            return True
+        except docker.errors.APIError:
+            return False
+
+    def build_container_from_url(self, url_path):
+        file = open("testDok", "r")
+        dockerfile = file.read()
+        f = BytesIO(dockerfile.encode('utf-8'))
+        response = [line for line in self.client.build(fileobj=f, rm=True, tag='yourname/volume')]
+        print(response)
