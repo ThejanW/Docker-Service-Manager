@@ -41,13 +41,7 @@ def index():
     """The index page which provide information about other API end points"""
     services = ["app1", "app2", "app3", "app4"]
 
-    return render_template('index_test.html', services=services, async_mode=socketio.async_mode)
-
-
-#
-# @app.route("/api/<service_name>/status", methods=['GET'])
-# def service_status(service_name):
-#     return utils.check_status(service_name)
+    return render_template('index.html', services=services, async_mode=socketio.async_mode)
 
 
 @socketio.on('connect', namespace='/test')
@@ -66,12 +60,6 @@ def background_thread():
             socketio.emit('my_response',
                           {'data': "{0}: {1}".format(service, utils.check_status(service))},
                           namespace='/test')
-
-
-# def init():
-#     if not utils.search_container():
-#         utils.pull_container_from_hub()
-#     utils.start_nginx()
 
 
 @socketio.on('start', namespace='/test')

@@ -41,14 +41,4 @@ RUN apt-get update
 RUN apt-get install -y docker-ce=17.03.1~ce-0~ubuntu-xenial
 
 
-<!--<div>-->
-        <!--<h3>Service Name: {{service_name}}</h3>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<h3>Service Status: {{ url_for('service_status', service_name=service_name) }}</h3>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<input type="button" value="START" onclick="">-->
-        <!--</div>-->
-
 for i in u.build_container_from_url("https://raw.githubusercontent.com/ThejanW/Docker-Service-Manager/master/App3/DockerApp3", "app3"): print(i)
