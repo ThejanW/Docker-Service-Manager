@@ -3,6 +3,7 @@ import docker
 from docker import errors
 import json
 from io import BytesIO
+from urllib import request
 
 
 class Utils(object):
@@ -12,7 +13,7 @@ class Utils(object):
     def stop_containers(self, image_name):
         try:
             container_ids = self.client.containers.list(filters={'ancestor': image_name})
-            [container_id.remove(force=True) for container_id in container_ids]
+            for container_id in container_ids: container_id.remove(force=True)
             return True
         except docker.errors.APIError:
             return False
@@ -36,16 +37,16 @@ class Utils(object):
             container_ids = self.client.containers.list(filters={'ancestor': image_name})
             # when stopped and started there should be only one container in the container_ids list
             if len(container_ids) == 0:
-                return "STOPPED"
+                return 'STOPPED'
             else:
                 if container_ids[0].status == 'running':
-                    return "RUNNING"
+                    return 'RUNNING'
         else:
-            return "NOT AVAILABLE"
+            return 'NOT AVAILABLE'
 
     def start_nginx(self, image_name='jwilder/nginx-proxy'):
         try:
-            if self.check_status(image_name) != "RUNNING":
+            if self.check_status(image_name) != 'RUNNING':
                 self.client.containers.run(image_name, detach=True,
                                            volumes={'/var/run/docker.sock': {'bind': '/tmp/docker.sock', 'mode': 'ro'}},
                                            ports={'80/tcp': 8764})
@@ -63,17 +64,26 @@ class AdvancedUtils(object):
         try:
             for line in self.client.pull(image_name, stream=True):
                 j_line = json.loads(line.decode('utf-8'))
-                if j_line["status"] == "Downloading":
-                    j_progress_details = j_line["progressDetail"]
-                    print(j_progress_details["current"] * 100 / j_progress_details["total"])
-                    print(j_line["progress"])
+                if j_line['status'] == 'Downloading':
+                    j_progress_details = j_line['progressDetail']
+                    progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                    print(progress_val)
+                    print(j_line['progress'])
+                    return progress_val
             return True
         except docker.errors.APIError:
             return False
 
-    def build_container_from_url(self, url_path):
-        file = open("testDok", "r")
-        dockerfile = file.read()
-        f = BytesIO(dockerfile.encode('utf-8'))
-        response = [line for line in self.client.build(fileobj=f, rm=True, tag='yourname/volume')]
-        print(response)
+    def build_container_from_url(self, url_path, tag):
+        try:
+            response = request.urlopen(url_path)
+            data = BytesIO(response.read())
+            for line in self.client.build(fileobj=data, rm=True, tag=tag):
+                output = json.loads(line.decode('utf-8'))['stream']
+                print(output)
+                return output
+            return True
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            return False
