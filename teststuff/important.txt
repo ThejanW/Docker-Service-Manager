@@ -50,3 +50,5 @@ RUN apt-get install -y docker-ce=17.03.1~ce-0~ubuntu-xenial
         <!--<div>-->
         <!--<input type="button" value="START" onclick="">-->
         <!--</div>-->
+
+for i in u.build_container_from_url("https://raw.githubusercontent.com/ThejanW/Docker-Service-Manager/master/App3/DockerApp3", "app3"): print(i)

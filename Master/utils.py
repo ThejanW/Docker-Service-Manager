@@ -60,19 +60,23 @@ class AdvancedUtils(object):
         self.client = docker.APIClient(base_url)
 
     def pull_container_from_hub(self, image_name='jwilder/nginx-proxy:latest'):
-        image_name = 'alpine:latest'
+        # image_name = 'alpine:latest'
         try:
-            for line in self.client.pull(image_name, stream=True):
-                j_line = json.loads(line.decode('utf-8'))
-                if j_line['status'] == 'Downloading':
-                    j_progress_details = j_line['progressDetail']
-                    progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                    print(progress_val)
-                    print(j_line['progress'])
-                    return progress_val
-            return True
-        except docker.errors.APIError:
-            return False
+            if self.client.ping():
+                for line in self.client.pull(image_name, stream=True):
+                    j_line = json.loads(line.decode('utf-8'))
+                    if j_line['status'] == 'Downloading':
+                        j_progress_details = j_line['progressDetail']
+                        progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                        print(progress_val)
+                        print(j_line['progress'])
+                        yield progress_val
+                yield True
+            yield False
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            yield False
 
     def build_container_from_url(self, url_path, tag):
         try:
@@ -81,9 +85,9 @@ class AdvancedUtils(object):
             for line in self.client.build(fileobj=data, rm=True, tag=tag):
                 output = json.loads(line.decode('utf-8'))['stream']
                 print(output)
-                return output
-            return True
+                yield output
+            yield True
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
-            return False
+            yield False
