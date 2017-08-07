@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{HTTP_HOST} ^daterangepicker\.com
+RewriteRule (.*) http://www.daterangepicker.com/$1 [R=301,L]

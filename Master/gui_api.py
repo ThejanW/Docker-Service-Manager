@@ -2,14 +2,16 @@
 import json
 from flask import Flask, request, Response, render_template
 from flask_socketio import SocketIO, emit
-from utils import Utils
+from utils import Utils, AdvancedUtils
 
 async_mode = None
 
 app = Flask(__name__)
+app.static_url_path = ''
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
+thread1 = None
 
 SAMPLE_BASIC_POST = {
     "app": {
@@ -34,14 +36,15 @@ SAMPLE_BASIC_RESPONSE = {
 }
 
 utils = Utils()
+adv_utils = AdvancedUtils()
 
 
 @app.route("/")
 def index():
     """The index page which provide information about other API end points"""
-    services = ["app1", "app2", "app3", "app4"]
+    services = ["service1", "service2", "service3", "service4"]
 
-    return render_template('index.html', services=services, async_mode=socketio.async_mode)
+    return render_template('index.html', services=services)
 
 
 @socketio.on('connect', namespace='/test')
@@ -49,17 +52,34 @@ def test_connect():
     global thread
     if thread is None:
         thread = socketio.start_background_task(target=background_thread)
-    emit('my_response', {'data': 'Connected'})
+    emit('log_run_status', {'data': 'Connected'})
 
 
 def background_thread():
-    services = ["app1", "app2", "app3", "app4"]
+    services = ["service1", "service2", "service3", "service4"]
     while True:
-        socketio.sleep(10)
+        socketio.sleep(3)
         for service in services:
-            socketio.emit('my_response',
-                          {'data': "{0}: {1}".format(service, utils.check_status(service))},
+            socketio.emit('log_run_status',
+                          {'service': "{0}".format(service),
+                           'status': "{0}".format(utils.check_status(service))},
                           namespace='/test')
+
+
+@socketio.on('init', namespace='/build')
+def init():
+    if not utils.search_container("app5"):
+        # for out in adv_utils.pull_container_from_hub('jwilder/nginx-proxy:latest'):
+        for out in adv_utils.pull_container_from_hub('puppet/puppetserver'):
+            socketio.sleep(0)
+            print(out)
+            socketio.emit('log_build_status', {'data': str(out)}, namespace='/build')
+            if out == 'False':
+                emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'})
+    if utils.start_nginx():
+        emit('log_build_status', {'data': 'Initialized'})
+    else:
+        emit('log_build_status', {'data': 'Couldn\'t Initialize'})
 
 
 @socketio.on('start', namespace='/test')
@@ -127,3 +147,4 @@ if __name__ == '__main__':
     port = "8765"
     print("Serving on port %s" % port)
     socketio.run(app, port=int(port))
+    # app.run()

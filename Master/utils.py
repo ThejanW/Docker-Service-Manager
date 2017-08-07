@@ -7,8 +7,8 @@ from urllib import request
 
 
 class Utils(object):
-    def __init__(self):
-        self.client = docker.from_env()
+    def __init__(self, base_url='unix://var/run/docker.sock'):
+        self.client = docker.DockerClient(base_url)
 
     def stop_containers(self, image_name):
         try:
@@ -26,6 +26,7 @@ class Utils(object):
             return False
 
     def search_container(self, image_name='jwilder/nginx-proxy'):
+        # image_name = 'alpine:latest'
         try:
             self.client.images.get(image_name)
             return True
@@ -34,7 +35,7 @@ class Utils(object):
 
     def check_status(self, image_name):
         if self.search_container(image_name):
-            container_ids = self.client.containers.list(filters={'ancestor': image_name})
+            container_ids = self.get_container_ids(image_name)
             # when stopped and started there should be only one container in the container_ids list
             if len(container_ids) == 0:
                 return 'STOPPED'
@@ -43,6 +44,9 @@ class Utils(object):
                     return 'RUNNING'
         else:
             return 'NOT AVAILABLE'
+
+    def get_container_ids(self, image_name):
+        return self.client.containers.list(filters={'ancestor': image_name})
 
     def start_nginx(self, image_name='jwilder/nginx-proxy'):
         try:
@@ -59,8 +63,7 @@ class AdvancedUtils(object):
     def __init__(self, base_url='unix://var/run/docker.sock'):
         self.client = docker.APIClient(base_url)
 
-    def pull_container_from_hub(self, image_name='jwilder/nginx-proxy:latest'):
-        # image_name = 'alpine:latest'
+    def pull_container_from_hub(self, image_name):
         try:
             if self.client.ping():
                 for line in self.client.pull(image_name, stream=True):
@@ -68,11 +71,12 @@ class AdvancedUtils(object):
                     if j_line['status'] == 'Downloading':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        print(progress_val)
-                        print(j_line['progress'])
+                        # print(progress_val)
+                        # print(j_line['progress'])
                         yield progress_val
                 yield True
-            yield False
+            else:
+                yield False
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -91,3 +95,5 @@ class AdvancedUtils(object):
             raise
         except:
             yield False
+
+    # for docker stats
