@@ -1,0 +1,44 @@
+{
+  "name": "Docker Service Manager",
+  "version": "0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ThejanW/Docker-Service-Manager.git"
+  },
+  "license": "MIT",
+  "base-url": "unix://var/run/docker.sock",
+  "jwilder/nginx-proxy": {
+    "version": "0.4.0",
+    "volumes": {
+      "/var/run/docker.sock": {
+        "bind": "/tmp/docker.sock",
+        "mode": "ro"
+      }
+    },
+    "ports": {
+      "80/tcp": "8764"
+    }
+  },
+  "services": [
+    {
+      "name": "service1",
+      "description": "This is demo service 1",
+      "virtual-host": "service1.services.dev"
+    },
+    {
+      "name": "service2",
+      "description": "This is demo service 2",
+      "virtual-host": "service2.services.dev"
+    },
+    {
+      "name": "service3",
+      "description": "This is demo service 3",
+      "virtual-host": "service3.services.dev"
+    },
+    {
+      "name": "service4",
+      "description": "This is demo service 4",
+      "virtual-host": "service4.services.dev"
+    }
+  ]
+}

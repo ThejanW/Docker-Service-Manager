@@ -48,7 +48,7 @@ class Utils(object):
     def get_container_ids(self, image_name):
         return self.client.containers.list(filters={'ancestor': image_name})
 
-    def start_nginx(self, image_name='jwilder/nginx-proxy'):
+    def start_nginx(self, image_name='jwilder/nginx-proxy:0.4.0'):
         try:
             if self.check_status(image_name) != 'RUNNING':
                 self.client.containers.run(image_name, detach=True,
