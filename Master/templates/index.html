@@ -103,8 +103,8 @@ desired effect
                 </li>
                 <!-- Optionally, you can add icons to the links -->
                 {% for service in services %}
-                <li><a href="javascript:void(null);" onclick="showService('{{service}}')"><i
-                        class="fa fa-link"></i><span>{{service}}</span></a></li>
+                <li><a href="javascript:void(null);" onclick="showService('{{service.name}}')"><i
+                        class="fa fa-link"></i><span>{{service.name}}</span></a></li>
                 {% endfor %}
             </ul>
             <!-- /.sidebar-menu -->
@@ -141,7 +141,6 @@ desired effect
                             <div class="box-body table-responsive no-padding">
                                 <table class="table table-hover">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Virtual Host</th>
                                         <th>Status</th>
@@ -149,13 +148,13 @@ desired effect
                                     </tr>
                                     {% for service in services %}
                                     <tr>
-                                        <td>183</td>
-                                        <td>{{service}}</td>
-                                        <td>11-7-2014</td>
+                                        <td>{{service.name}}</td>
+                                        <td>{{service.virtual_host}}</td>
                                         <td>
-                                            <span class="label label-success" id="status_{{service}}">RUNNING</span>
+                                            <span class="label label-success"
+                                                  id="status_{{service.name}}">RUNNING</span>
                                         </td>
-                                        <td>This is {{service}}</td>
+                                        <td>{{service.description}}</td>
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -176,13 +175,13 @@ desired effect
 
     {% for service in services %}
     <!-- Service -->
-    <div id=service_{{service}}>
+    <div id=service_{{service.name}}>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <section class="content-header">
-                <h1>{{service}}</h1>
+                <h1>{{service.name}}</h1>
 
             </section>
 
@@ -190,8 +189,8 @@ desired effect
             <section class="content">
                 <div class="row">
                     <div class="col-md-3">
-                        <a href="javascript:void(null);" id="status_btn_{{service}}"
-                           onclick="doAction('{{service}}', this)"
+                        <a href="javascript:void(null);" id="status_btn_{{service.name}}"
+                           onclick="doAction('{{service.name}}', this)"
                            class="btn btn-primary btn-block margin-bottom">START</a>
                     </div>
                     <!-- /.col -->

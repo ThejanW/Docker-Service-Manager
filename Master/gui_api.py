@@ -35,6 +35,9 @@ SAMPLE_BASIC_RESPONSE = {
     }
 }
 
+with open('dsm-config.json') as config_file:
+    configs = json.load(config_file)
+
 utils = Utils()
 adv_utils = AdvancedUtils()
 
@@ -42,9 +45,8 @@ adv_utils = AdvancedUtils()
 @app.route("/")
 def index():
     """The index page which provide information about other API end points"""
-    services = ["service1", "service2", "service3", "service4"]
 
-    return render_template('index.html', services=services)
+    return render_template('index.html', services=configs['services'])
 
 
 @socketio.on('connect', namespace='/test')
