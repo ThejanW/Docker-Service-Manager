@@ -26,7 +26,7 @@ $(document).ready(function () {
             }).addClass('label-success');
         }
         else if (status == "NOT AVAILABLE") {
-            status_service_btn.text("BUILD");
+            status_service_btn.text("PULL");
             status_service.removeClass(function (index, className) {
                 return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
             }).addClass('label-primary');
@@ -65,6 +65,7 @@ function showService(service) {
     $('#service_' + service).show();
 }
 
+// start, stop a container or pull an image
 function doAction(service, virtual_host, object) {
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
@@ -75,8 +76,8 @@ function doAction(service, virtual_host, object) {
     else if ($(object).text() == "STOP") {
         socket.emit('stop', {service: service});
     }
-    else if ($(object).text() == "BUILD") {
-        socket.emit('build', {service: service});
+    else if ($(object).text() == "PULL") {
+        socket.emit('pull', {service: service});
     }
     return false;
 }

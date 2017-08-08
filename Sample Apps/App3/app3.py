@@ -8,7 +8,7 @@ app = flask.Flask(__name__)
 def index():
     """The index page which provide information about other API end points"""
 
-    return "I am app 3"
+    return "This is service 3"
 
 
 if __name__ == '__main__':
