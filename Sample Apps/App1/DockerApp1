@@ -1,16 +1,21 @@
 FROM alpine:3.6
 MAINTAINER ThejanW
-RUN \
-    apt-get update && apt-get install -y python-pip python-dev wget nano && apt-get clean && \
-    pip install flask requests
+RUN apk add --no-cache python && \
+    python -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip install --upgrade pip setuptools && \
+    rm -r /root/.cache
+#install flask
+RUN pip install flask
 # Download server related source files
-WORKDIR /usr/share/apache-tika/src/dl/app1/
-RUN \
+WORKDIR /usr/share/DSM/src/service1/
+RUN apk add --no-cache --virtual .bootstrap-deps wget ca-certificates && \
     wget https://raw.githubusercontent.com/ThejanW/Docker-Service-Manager/master/Sample%20Apps/App1/app1.py -O app1.py && \
-    chmod +x app1.py
+    chmod +x app1.py && \
+    apk del .bootstrap-deps
 WORKDIR /
 # Add symbolic link to app1.py
-RUN ln -s /usr/share/apache-tika/src/dl/app1/app1.py /usr/bin/app1
+RUN ln -s /usr/share/DSM/src/service1/app1.py /usr/bin/app1
 # expose API port, this is the default port
 EXPOSE 8764
 CMD app1
