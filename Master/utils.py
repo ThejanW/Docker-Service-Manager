@@ -7,7 +7,7 @@ from urllib import request
 
 
 class Utils(object):
-    def __init__(self, base_url='unix://var/run/docker.sock'):
+    def __init__(self, base_url):
         self.client = docker.DockerClient(base_url)
 
     def stop_containers(self, image_name):
@@ -18,9 +18,9 @@ class Utils(object):
         except docker.errors.APIError:
             return False
 
-    def start_container(self, image_name):
+    def start_container(self, image_name, virtual_host):
         try:
-            self.client.containers.run(image_name, detach=True, environment={'VIRTUAL_HOST': image_name + '.tika.dl'})
+            self.client.containers.run(image_name, detach=True, environment={'VIRTUAL_HOST': virtual_host})
             return True
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
@@ -60,7 +60,7 @@ class Utils(object):
 
 
 class AdvancedUtils(object):
-    def __init__(self, base_url='unix://var/run/docker.sock'):
+    def __init__(self, base_url):
         self.client = docker.APIClient(base_url)
 
     def pull_container_from_hub(self, image_name):
@@ -95,5 +95,3 @@ class AdvancedUtils(object):
             raise
         except:
             yield False
-
-    # for docker stats

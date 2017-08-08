@@ -190,7 +190,7 @@ desired effect
                 <div class="row">
                     <div class="col-md-3">
                         <a href="javascript:void(null);" id="status_btn_{{service.name}}"
-                           onclick="doAction('{{service.name}}', this)"
+                           onclick="doAction('{{service.name}}', '{{service.virtual_host}}', this)"
                            class="btn btn-primary btn-block margin-bottom">START</a>
                     </div>
                     <!-- /.col -->
@@ -305,8 +305,7 @@ immediately after the control sidebar -->
 <!-- AdminLTE App -->
 <script src="{{ url_for('static', filename='adminLTE/dist/js/adminlte.min.js') }}"></script>
 
-<script src="{{ url_for('static', filename='js/sockets.js') }}"></script>
-<script src="{{ url_for('static', filename='js/external.js') }}"></script>
+<script src="{{ url_for('static', filename='js/activity.js') }}"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
  Both of these plugins are recommended to enhance the
  user experience. -->

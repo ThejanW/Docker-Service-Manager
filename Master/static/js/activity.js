@@ -1,7 +1,8 @@
-/**
- * Created by thejan on 8/1/17.
- */
 $(document).ready(function () {
+
+    //hide individual service pages at startup, only show the services summary table
+    $('[id^=service_service]').hide();
+
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
@@ -45,18 +46,38 @@ $(document).ready(function () {
     });
 });
 
-function doAction(pattern, object) {
+// for highlighting elements in left panel
+$('#service-list').on('click', 'li', function () {
+    $(this).addClass('active').siblings().removeClass('active');
+});
+
+// hide individual services, show services summary table
+function goHome() {
+    $('#service-list').children().removeClass('active');
+    $('#home').show();
+    $('[id^=service_service]').hide();
+}
+
+//hide services summary table, show the individual service page
+function showService(service) {
+    $('#home').hide();
+    $('[id^=service_service]').hide();
+    $('#service_' + service).show();
+}
+
+function doAction(service, virtual_host, object) {
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     if ($(object).text() == "START") {
-        socket.emit('start', {service: pattern});
+        socket.emit('start', {service: service, virtual_host: virtual_host});
     }
     else if ($(object).text() == "STOP") {
-        socket.emit('stop', {service: pattern});
+        socket.emit('stop', {service: service});
     }
     else if ($(object).text() == "BUILD") {
-        socket.emit('build', {service: pattern});
+        socket.emit('build', {service: service});
     }
     return false;
 }
+

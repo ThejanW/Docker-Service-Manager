@@ -11,35 +11,12 @@ app.static_url_path = ''
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
-thread1 = None
-
-SAMPLE_BASIC_POST = {
-    "app": {
-        "name": "",
-        "action": ""
-    }
-}
-
-SAMPLE_ADVANCED_POST = {
-    "app": {
-        "name": "",
-        "action": ""
-    }
-}
-
-SAMPLE_BASIC_RESPONSE = {
-    "result": "OK",
-    "app": {
-        "name": "",
-        "status": ""
-    }
-}
 
 with open('dsm-config.json') as config_file:
     configs = json.load(config_file)
 
-utils = Utils()
-adv_utils = AdvancedUtils()
+utils = Utils(base_url=configs["base_url"])
+adv_utils = AdvancedUtils(base_url=configs["base_url"])
 
 
 @app.route("/")
@@ -50,7 +27,7 @@ def index():
 
 
 @socketio.on('connect', namespace='/test')
-def test_connect():
+def on_connect():
     global thread
     if thread is None:
         thread = socketio.start_background_task(target=background_thread)
@@ -87,8 +64,9 @@ def init():
 @socketio.on('start', namespace='/test')
 def start(message):
     service = message['service']
+    virtual_host = message['virtual_host']
     stopped = utils.stop_containers(service)
-    started = utils.start_container(service)
+    started = utils.start_container(image_name=service, virtual_host=virtual_host)
     if stopped & started:
         emit('my_response',
              {'data': 'just started {0}'.format(service)})
@@ -103,50 +81,7 @@ def stop(message):
              {'data': 'just stopped {0}'.format(service)})
 
 
-@app.route('/api/gui/<mode>', methods=['GET', 'POST'])
-def container_utils(mode):
-    content = request.get_json(silent=True)
-    response = {
-        "result": "",
-        "app": {
-            "name": "",
-            "status": ""
-        }
-    }
-    if not utils.search_container():
-        utils.pull_container_from_hub()
-    if utils.start_nginx():
-        if mode == 'basic':
-            app_name = content['app']['name']
-            app_action = content['app']['action']
-            response["app"]["name"] = app_name
-            if app_action == 'start':
-                stopped = utils.stop_containers(app_name)
-                started = utils.start_container(app_name)
-                if stopped & started:  # return "OK"
-                    response["result"] = "OK"
-                    response["app"]["status"] = utils.check_status(app_name)
-            elif app_action == "stop":
-                stopped = utils.stop_containers(app_name)
-                if stopped:  # return "OK"
-                    response["result"] = "OK"
-                    response["app"]["status"] = utils.check_status(app_name)
-            else:  # return "ERROR"
-                response["result"] = "ERROR"
-            return Response(response=json.dumps(response), status=200, mimetype="application/json")
-        elif mode == 'advanced':
-            return "advanced"
-        else:  # return "NOT SUPPORTED"
-            return "NOT SUPPORTED"
-
-
-@app.route('/test/<service>')
-def test(service):
-    return str(utils.start_container(service))
-
-
 if __name__ == '__main__':
-    port = "8765"
+    port = configs["dsm_port"]
     print("Serving on port %s" % port)
     socketio.run(app, port=int(port))
-    # app.run()
