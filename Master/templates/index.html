@@ -79,7 +79,7 @@
                 </li>
                 <!-- Optionally, you can add icons to the links -->
                 {% for service in services %}
-                <li><a href="javascript:void(null);" onclick="showService('{{service.name}}')"><i
+                <li><a href="javascript:void(null);" onclick="showService('{{ service.name }}')"><i
                         class="fa fa-link"></i><span>{{service.name}}</span></a></li>
                 {% endfor %}
             </ul>
@@ -166,7 +166,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <a href="javascript:void(null);" id="status_btn_{{service.name}}"
-                           onclick="doAction('{{service.name}}', '{{service.virtual_host}}', this)"
+                           onclick="doAction('{{service.image_name}}', '{{service.virtual_host}}', this)"
                            class="btn btn-primary btn-block margin-bottom">START</a>
                     </div>
                     <!-- /.col -->

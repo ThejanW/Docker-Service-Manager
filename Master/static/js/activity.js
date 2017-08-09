@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     //hide individual service pages at startup, only show the services summary table
-    $('[id^=service_service]').hide();
+    $('[id^=service_]').hide();
 
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
@@ -55,13 +55,13 @@ $('#service-list').on('click', 'li', function () {
 function goHome() {
     $('#service-list').children().removeClass('active');
     $('#home').show();
-    $('[id^=service_service]').hide();
+    $('[id^=service_]').hide();
 }
 
 //hide services summary table, show the individual service page
 function showService(service) {
     $('#home').hide();
-    $('[id^=service_service]').hide();
+    $('[id^=service_]').hide();
     $('#service_' + service).show();
 }
 

@@ -35,13 +35,13 @@ def on_connect():
 
 
 def background_thread():
-    services = ["service1", "service2", "service3", "service4"]
+    services = configs["services"]
     while True:
         socketio.sleep(3)
         for service in services:
             socketio.emit('log_run_status',
-                          {'service': "{0}".format(service),
-                           'status': "{0}".format(utils.check_status(service))},
+                          {'service': "{0}".format(service["name"]),
+                           'status': "{0}".format(utils.check_status(service["image_name"]))},
                           namespace='/test')
 
 
