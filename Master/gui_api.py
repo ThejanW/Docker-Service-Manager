@@ -4,13 +4,14 @@ from flask import Flask, request, Response, render_template
 from flask_socketio import SocketIO, emit
 from utils import Utils, AdvancedUtils
 
-async_mode = None
+async_mode = "eventlet"
 
 app = Flask(__name__)
 app.static_url_path = ''
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode)
+socketio = SocketIO(app, async_mode=async_mode, async_handlers=True)
 thread = None
+thread1 = None
 
 with open('dsm-config.json') as config_file:
     configs = json.load(config_file)
@@ -45,14 +46,21 @@ def background_thread():
                           namespace='/test')
 
 
-@socketio.on('init', namespace='/build')
+@socketio.on('init', namespace='/test')
+def on_init():
+    global thread1
+    if thread1 is None:
+        thread1 = socketio.start_background_task(target=init)
+
+
 def init():
-    if not utils.search_container("app5"):
-        # for out in adv_utils.pull_container_from_hub('jwilder/nginx-proxy:latest'):
-        for out in adv_utils.pull_container_from_hub('puppet/puppetserver'):
-            socketio.sleep(0)
+    reverse_proxy = configs["reverse_proxy"]
+    reverse_proxy_image_name = "{0}:{1}".format(reverse_proxy["name"], reverse_proxy["version"])
+    if not utils.search_container(reverse_proxy_image_name):
+        for out in adv_utils.pull_container_from_hub(reverse_proxy_image_name):
+            socketio.sleep(2)
             print(out)
-            socketio.emit('log_build_status', {'data': str(out)}, namespace='/build')
+            socketio.emit('log_build_status', {'data': str(out)}, namespace='/test')
             if out == 'False':
                 emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'})
     if utils.start_nginx():
@@ -79,6 +87,17 @@ def stop(message):
     if stopped:
         emit('my_response',
              {'data': 'just stopped {0}'.format(service)})
+
+
+@socketio.on('pull', namespace='/test')
+def pull(message):
+    service = message['service']
+    for out in adv_utils.pull_container_from_hub(service):
+        socketio.sleep(0)
+        print(out)
+        socketio.emit('log_build_status', {'data': str(out)}, namespace='/build')
+        if out == 'False':
+            emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/build')
 
 
 if __name__ == '__main__':

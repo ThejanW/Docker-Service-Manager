@@ -8,7 +8,8 @@
   "license": "MIT",
   "dsm_port": "8765",
   "base_url": "unix://var/run/docker.sock",
-  "jwilder/nginx-proxy": {
+  "reverse_proxy": {
+    "name": "jwilder/nginx-proxy",
     "version": "0.4.0",
     "volumes": {
       "/var/run/docker.sock": {
@@ -38,6 +39,12 @@
       "image_name": "thejanw/demo-service3",
       "description": "This is demo service 3",
       "virtual_host": "service3.services.dev"
+    },
+    {
+      "name": "demo_ubuntu",
+      "image_name": "ubuntu:16.04",
+      "description": "This is demo ubuntu",
+      "virtual_host": "ubuntu.services.dev"
     }
   ]
 }

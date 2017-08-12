@@ -25,8 +25,7 @@ class Utils(object):
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
 
-    def search_container(self, image_name='jwilder/nginx-proxy'):
-        # image_name = 'alpine:latest'
+    def search_container(self, image_name):
         try:
             self.client.images.get(image_name)
             return True
@@ -66,14 +65,27 @@ class AdvancedUtils(object):
     def pull_container_from_hub(self, image_name):
         try:
             if self.client.ping():
+                j_id_status = {}
                 for line in self.client.pull(image_name, stream=True):
                     j_line = json.loads(line.decode('utf-8'))
-                    if j_line['status'] == 'Downloading':
+
+                    # instant container id
+                    j_id = j_line['id']
+                    if j_line['status'] == 'Pulling fs layer':
+                        j_id_status[j_id] = ['Pulling fs layer']
+                    elif j_line['status'] == 'Downloading':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        # print(progress_val)
-                        # print(j_line['progress'])
-                        yield progress_val
+                        j_id_status[j_id] = ['Downloading', progress_val]
+                    elif j_line['status'] == 'Download complete':
+                        j_id_status[j_id] = ['Download complete']
+                    elif j_line['status'] == 'Extracting':
+                        j_progress_details = j_line['progressDetail']
+                        progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                        j_id_status[j_id] = ['Extracting', progress_val]
+                    elif j_line['status'] == 'Pull complete':
+                        j_id_status[j_id] = ['Pull complete']
+                    yield j_id_status
                 yield True
             else:
                 yield False

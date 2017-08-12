@@ -37,7 +37,9 @@ $(document).ready(function () {
     var socket_build = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace_build);
 
     socket_build.on('log_build_status', function (msg) {
-        $('#log_build_status').append('<br>' + $('<div/>').text(msg.data).html());
+        // $('#log_build_status').append('<br>' + $('<div/>').text(msg.data).html());
+        console.log(msg.data);
+        $('#log_build_status').append(msg.data)
     });
 
 
