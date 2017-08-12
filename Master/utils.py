@@ -72,19 +72,19 @@ class AdvancedUtils(object):
                     # instant container id
                     j_id = j_line['id']
                     if j_line['status'] == 'Pulling fs layer':
-                        j_id_status[j_id] = ['Pulling fs layer']
+                        j_id_status[j_id] = ['Pulling fs layer', 0]
                     elif j_line['status'] == 'Downloading':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
                         j_id_status[j_id] = ['Downloading', progress_val]
                     elif j_line['status'] == 'Download complete':
-                        j_id_status[j_id] = ['Download complete']
+                        j_id_status[j_id] = ['Download complete', 100]
                     elif j_line['status'] == 'Extracting':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
                         j_id_status[j_id] = ['Extracting', progress_val]
                     elif j_line['status'] == 'Pull complete':
-                        j_id_status[j_id] = ['Pull complete']
+                        j_id_status[j_id] = ['Pull complete', 100]
                     yield j_id_status
                 yield True
             else:
