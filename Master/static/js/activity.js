@@ -37,9 +37,13 @@ $(document).ready(function () {
     var socket_build = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace_build);
 
     socket_build.on('log_build_status', function (msg) {
-        // $('#log_build_status').append('<br>' + $('<div/>').text(msg.data).html());
-        console.log(msg.data);
-        $('#log_build_status').append(msg.data)
+        var logs = JSON.parse(msg.data);
+
+        for (var key in logs) {
+            if (logs.hasOwnProperty(key)) {
+                console.log(logs[key]);
+            }
+        }
     });
 
 

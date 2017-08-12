@@ -94,8 +94,8 @@ def pull(message):
     service = message['service']
     for out in adv_utils.pull_container_from_hub(service):
         socketio.sleep(0)
-        print(out)
-        socketio.emit('log_build_status', {'data': str(out)}, namespace='/build')
+        print(json.dumps(out))
+        socketio.emit('log_build_status', {'data': json.dumps(out)}, namespace='/build')
         if out == 'False':
             emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/build')
 
