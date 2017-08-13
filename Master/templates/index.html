@@ -99,10 +99,10 @@
                     <div class="col-xs-12">
                         <div class="box">
                             <div class="box-header">
-                                <h3 class="box-title">Service Initialization <span
-                                        class="label label-success">SUCCESS</span></h3>
-
-
+                                <h3 class="box-title">Service Initialization
+                                    <span class="label label-primary"
+                                          id="init">INITIALIZATION IN PROGRESS</span>
+                                </h3>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body table-responsive no-padding">
@@ -118,8 +118,8 @@
                                         <td>{{service.name}}</td>
                                         <td>{{service.virtual_host}}</td>
                                         <td>
-                                            <span class="label label-success"
-                                                  id="status_{{service.name}}">RUNNING</span>
+                                            <span class="label label-primary"
+                                                  id="status_{{service.name}}">INITIALIZATION IN PROGRESS</span>
                                         </td>
                                         <td>{{service.description}}</td>
                                     </tr>
@@ -164,7 +164,7 @@
                 </div>
                 <!-- /.row -->
 
-                <!--progress bars-->
+                <!--progress bars for specific services-->
 
                 <div id="container_pull_logs_{{service.name}}" class="row">
                     <div class="col-md-12">
@@ -199,7 +199,7 @@
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
-                <!--progress bars-->
+                <!--progress bars specific services-->
 
             </section>
             <!-- /.content -->

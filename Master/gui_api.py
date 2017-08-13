@@ -36,37 +36,21 @@ def on_connect():
 
 
 def background_thread():
-    services = configs["services"]
-    while True:
-        socketio.sleep(3)
-        for service in services:
-            socketio.emit('log_run_status',
-                          {'service': "{0}".format(service["name"]),
-                           'status': "{0}".format(utils.check_status(service["image_name"]))},
-                          namespace='/test')
-
-
-@socketio.on('init', namespace='/test')
-def on_init():
-    global thread1
-    if thread1 is None:
-        thread1 = socketio.start_background_task(target=init)
-
-
-def init():
     reverse_proxy = configs["reverse_proxy"]
     reverse_proxy_image_name = "{0}:{1}".format(reverse_proxy["name"], reverse_proxy["version"])
-    if not utils.search_container(reverse_proxy_image_name):
-        for out in adv_utils.pull_container_from_hub(reverse_proxy_image_name):
-            socketio.sleep(2)
-            print(out)
-            socketio.emit('log_build_status', {'data': str(out)}, namespace='/test')
-            if out == 'False':
-                emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'})
-    if utils.start_nginx():
-        emit('log_build_status', {'data': 'Initialized'})
-    else:
-        emit('log_build_status', {'data': 'Couldn\'t Initialize'})
+    services = configs["services"]
+    while True:
+        socketio.sleep(2)
+        if utils.search_container(reverse_proxy_image_name):
+            utils.start_nginx()
+            socketio.emit('initialization', {'status': "SUCCESS"}, namespace='/test')
+            for service in services:
+                socketio.emit('log_run_status',
+                              {'service': "{0}".format(service["name"]),
+                               'status': "{0}".format(utils.check_status(service["image_name"]))},
+                              namespace='/test')
+        else:
+            socketio.emit('initialization', {'status': "INITIALIZATION FAILED"}, namespace='/test')
 
 
 @socketio.on('start', namespace='/test')

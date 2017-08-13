@@ -42,6 +42,22 @@ $(document).ready(function () {
         }
     });
 
+    socket.on('initialization', function (msg) {
+        var service_init = $('#init');
+        if (msg.status == "SUCCESS") {
+            service_init.removeClass(function (index, className) {
+                return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
+            }).addClass('label-success');
+            service_init.text("SUCCESS");
+        }
+        else if (msg.status == "INITIALIZATION FAILED") {
+            service_init.removeClass(function (index, className) {
+                return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
+            }).addClass('label-danger');
+            service_init.text("INITIALIZATION FAILED");
+        }
+    });
+
     namespace_build = '/build';
     var socket_build = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace_build);
 
@@ -77,11 +93,6 @@ $(document).ready(function () {
                 }
             }
         }
-    });
-
-
-    $('#init').click(function () {
-        socket_build.emit('init')
     });
 });
 
