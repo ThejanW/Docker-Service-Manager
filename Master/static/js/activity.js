@@ -59,7 +59,6 @@ $(document).ready(function () {
         }
     });
 
-
     pull_logs_socket.on('log_pull_status', function (msg) {
         var logs = JSON.parse(msg.data);
         var name = msg.name;
