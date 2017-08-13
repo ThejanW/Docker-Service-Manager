@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import json
-from flask import Flask, request, Response, render_template
+from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from utils import Utils, AdvancedUtils
 

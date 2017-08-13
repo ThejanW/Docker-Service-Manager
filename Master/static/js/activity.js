@@ -122,4 +122,3 @@ function doAction(name, image_name, virtual_host, object) {
     }
     return false;
 }
-

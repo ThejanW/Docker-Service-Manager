@@ -2,8 +2,6 @@
 import docker
 from docker import errors
 import json
-from io import BytesIO
-from urllib import request
 
 
 class Utils(object):
@@ -68,41 +66,27 @@ class AdvancedUtils(object):
                 j_id_status = {}
                 for line in self.client.pull(image_name, stream=True):
                     j_line = json.loads(line.decode('utf-8'))
-
-                    # instant container id
-                    j_id = j_line['id']
-                    if j_line['status'] == 'Pulling fs layer':
-                        j_id_status[j_id] = ['Pulling fs layer', 0]
-                    elif j_line['status'] == 'Downloading':
-                        j_progress_details = j_line['progressDetail']
-                        progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        j_id_status[j_id] = ['Downloading', round(progress_val, 2)]
-                    elif j_line['status'] == 'Download complete':
-                        j_id_status[j_id] = ['Download complete', 100]
-                    elif j_line['status'] == 'Extracting':
-                        j_progress_details = j_line['progressDetail']
-                        progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        j_id_status[j_id] = ['Extracting', round(progress_val, 2)]
-                    elif j_line['status'] == 'Pull complete':
-                        j_id_status[j_id] = ['Pull complete', 100]
-                    yield j_id_status
+                    if 'id' in j_line:
+                        # instant container id
+                        j_id = j_line['id']
+                        if j_line['status'] == 'Pulling fs layer':
+                            j_id_status[j_id] = ['Pulling fs layer', 0]
+                        elif j_line['status'] == 'Downloading':
+                            j_progress_details = j_line['progressDetail']
+                            progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                            j_id_status[j_id] = ['Downloading', round(progress_val, 2)]
+                        elif j_line['status'] == 'Download complete':
+                            j_id_status[j_id] = ['Download complete', 100]
+                        elif j_line['status'] == 'Extracting':
+                            j_progress_details = j_line['progressDetail']
+                            progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                            j_id_status[j_id] = ['Extracting', round(progress_val, 2)]
+                        elif j_line['status'] == 'Pull complete':
+                            j_id_status[j_id] = ['Pull complete', 100]
+                        yield j_id_status
                 yield True
             else:
                 yield False
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            yield False
-
-    def build_container_from_url(self, url_path, tag):
-        try:
-            response = request.urlopen(url_path)
-            data = BytesIO(response.read())
-            for line in self.client.build(fileobj=data, rm=True, tag=tag):
-                output = json.loads(line.decode('utf-8'))['stream']
-                print(output)
-                yield output
-            yield True
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
