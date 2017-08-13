@@ -4,7 +4,7 @@ from flask import Flask, request, Response, render_template
 from flask_socketio import SocketIO, emit
 from utils import Utils, AdvancedUtils
 
-async_mode = "eventlet"
+async_mode = "gevent"
 
 app = Flask(__name__)
 app.static_url_path = ''
@@ -71,31 +71,32 @@ def init():
 
 @socketio.on('start', namespace='/test')
 def start(message):
-    service = message['service']
+    image_name = message['image_name']
     virtual_host = message['virtual_host']
-    stopped = utils.stop_containers(service)
-    started = utils.start_container(image_name=service, virtual_host=virtual_host)
+    stopped = utils.stop_containers(image_name)
+    started = utils.start_container(image_name=image_name, virtual_host=virtual_host)
     if stopped & started:
         emit('my_response',
-             {'data': 'just started {0}'.format(service)})
+             {'data': 'just started {0}'.format(image_name)})
 
 
 @socketio.on('stop', namespace='/test')
 def stop(message):
-    service = message['service']
-    stopped = utils.stop_containers(service)
+    image_name = message['image_name']
+    stopped = utils.stop_containers(image_name)
     if stopped:
         emit('my_response',
-             {'data': 'just stopped {0}'.format(service)})
+             {'data': 'just stopped {0}'.format(image_name)})
 
 
 @socketio.on('pull', namespace='/test')
 def pull(message):
-    service = message['service']
-    for out in adv_utils.pull_container_from_hub(service):
+    image_name = message['image_name']
+    name = message['name']
+    for out in adv_utils.pull_container_from_hub(image_name):
         socketio.sleep(0)
         print(json.dumps(out))
-        socketio.emit('log_build_status', {'data': json.dumps(out)}, namespace='/build')
+        socketio.emit('log_build_status', {'data': json.dumps(out), 'name': name}, namespace='/build')
         if out == 'False':
             emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/build')
 

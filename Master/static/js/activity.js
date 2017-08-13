@@ -3,6 +3,9 @@ $(document).ready(function () {
     //hide individual service pages at startup, only show the services summary table
     $('[id^=service_]').hide();
 
+    //hide container pull logs at the startup
+    $('[id^=container_pull_logs_]').hide();
+
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
@@ -38,9 +41,28 @@ $(document).ready(function () {
 
     socket_build.on('log_build_status', function (msg) {
         var logs = JSON.parse(msg.data);
+        var name = msg.name;
 
         for (var key in logs) {
             if (logs.hasOwnProperty(key)) {
+                if (logs[key][0] == "Pulling fs layer") {
+                    // if doesn't exist
+                    var div_name = "#progress_" + name + "_" + key;
+                    if (document.getElementById(div_name)) {
+                        console.log("already exists");
+                    }
+                    else {
+                        $("#progress_bar_" + name).append(
+                            '<div class="progress-group" id=' + div_name + '>\
+                                <span class="progress-text">Add Products to Cart</span>\
+                                <span class="progress-number"><b>160</b>/200</span>\
+                                <div class="progress sm">\
+                                    <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>\
+                                </div>\
+                             </div>\
+                        ');
+                    }
+                }
                 console.log(logs[key]);
             }
         }
@@ -72,18 +94,20 @@ function showService(service) {
 }
 
 // start, stop a container or pull an image
-function doAction(service, virtual_host, object) {
+function doAction(name, image_name, virtual_host, object) {
     namespace = '/test';
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     if ($(object).text() == "START") {
-        socket.emit('start', {service: service, virtual_host: virtual_host});
+        socket.emit('start', {image_name: image_name, virtual_host: virtual_host});
     }
     else if ($(object).text() == "STOP") {
-        socket.emit('stop', {service: service});
+        socket.emit('stop', {image_name: image_name});
     }
     else if ($(object).text() == "PULL") {
-        socket.emit('pull', {service: service});
+        //show container pull logs
+        $('#container_pull_logs_' + name).show();
+        socket.emit('pull', {image_name: image_name, name: name});
     }
     return false;
 }

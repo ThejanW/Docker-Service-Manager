@@ -157,7 +157,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <a href="javascript:void(null);" id="status_btn_{{service.name}}"
-                           onclick="doAction('{{service.image_name}}', '{{service.virtual_host}}', this)"
+                           onclick="doAction('{{service.name}}', '{{service.image_name}}', '{{service.virtual_host}}', this)"
                            class="btn btn-primary btn-block margin-bottom">START</a>
                     </div>
                     <!-- /.col -->
@@ -166,35 +166,34 @@
 
                 <!--progress bars-->
 
-                <div class="row">
+                <div id="container_pull_logs_{{service.name}}" class="row">
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header with-border">
                                 <h3 class="box-title">Container Pulling Logs</h3>
 
                                 <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                            class="fa fa-minus"></i>
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                        <i class="fa fa-minus"></i>
                                     </button>
 
-                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                            class="fa fa-times"></i></button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove">
+                                        <i class="fa fa-times"></i>
+                                    </button>
                                 </div>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="progress-group">
-                                            <span class="progress-text">Add Products to Cart</span>
-                                            <span class="progress-number"><b>160</b>/200</span>
-
-                                            <div class="progress sm">
-                                                <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-12" id="progress_bar_{{service.name}}">
+                                        <!--<div class="progress-group">-->
+                                        <!--<span class="progress-text">Add Products to Cart</span>-->
+                                        <!--<span class="progress-number"><b>160</b>/200</span>-->
+                                        <!--<div class="progress sm">-->
+                                        <!--<div class="progress-bar progress-bar-aqua" style="width: 80%"></div>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
                                         <!-- /.progress-group -->
-
                                     </div>
                                     <!-- /.col -->
                                 </div>
