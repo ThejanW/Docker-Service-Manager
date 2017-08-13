@@ -6,20 +6,15 @@
     <title>D | S | M</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='adminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='adminLTE/bower_components/font-awesome/css/font-awesome.min.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Ionicons -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='adminLTE/bower_components/Ionicons/css/ionicons.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='adminLTE/dist/css/AdminLTE.css') }}">
-    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-          page. However, you can choose any other skin. Make sure you
-          apply the skin class to the body tag so the changes take effect. -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='adminLTE/dist/css/skins/skin-blue.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.11/css/AdminLTE.min.css"/>
+    <!-- AdminLTE Skin -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.11/css/skins/skin-red.min.css"/>
 
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
@@ -33,7 +28,7 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-red sidebar-mini">
 <div class="wrapper">
     <!-- Main Header -->
     <header class="main-header">
@@ -191,12 +186,12 @@
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->
 <!-- jQuery 3 -->
-<script src="{{ url_for('static', filename='adminLTE/bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="{{ url_for('static', filename='adminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="{{ url_for('static', filename='adminLTE/dist/js/adminlte.min.js') }}"></script>
-<!--activity-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.11/js/app.min.js"></script>
+<!-- Activity -->
 <script src="{{ url_for('static', filename='js/activity.js') }}"></script>
 </body>
 </html>
