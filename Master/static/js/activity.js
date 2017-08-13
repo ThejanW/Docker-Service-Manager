@@ -17,13 +17,19 @@ $(document).ready(function () {
         var status_service_btn = $('#status_btn_' + service);
         status_service.text(status);
         if (status == "STOPPED") {
+            // change button text to start
             status_service_btn.text("START");
+            // hide pulling logs if there're any
+            $('#container_pull_logs_' + service).hide();
             status_service.removeClass(function (index, className) {
                 return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
             }).addClass('label-danger');
         }
         else if (status == "RUNNING") {
+            // change button text to stop
             status_service_btn.text("STOP");
+            // hide pulling logs if there're any
+            $('#container_pull_logs_' + service).hide();
             status_service.removeClass(function (index, className) {
                 return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
             }).addClass('label-success');
@@ -55,7 +61,7 @@ $(document).ready(function () {
                     if (!(document.getElementById(div_name))) {
                         $("#progress_bar_" + name).append(
                             '<div class="progress-group" id=' + div_name + '>\
-                                <span class="progress-text" id=' + div_name_progress_text + '>Pulling fs layer</span>\
+                                <span class="progress-text" id=' + div_name_progress_text + '>' + key + ': Pulling fs layer</span>\
                                 <span class="progress-number" id =' + div_name_progress_number + '><b>0/100</b></span>\
                                 <div class="progress sm">\
                                     <div class="progress-bar progress-bar-aqua" id=' + div_name_progress_bar + '></div>\
@@ -65,7 +71,7 @@ $(document).ready(function () {
                     }
                 }
                 else {
-                    $("#" + div_name_progress_text).text(logs[key][0]);
+                    $("#" + div_name_progress_text).text(key + ": " + logs[key][0]);
                     $("#" + div_name_progress_number + " b").text(logs[key][1] + "/100");
                     $("#" + div_name_progress_bar).css("width", logs[key][1] + "%");
                 }

@@ -45,6 +45,12 @@
       "image_name": "ubuntu:16.04",
       "description": "This is demo ubuntu",
       "virtual_host": "ubuntu.services.dev"
+    },
+    {
+      "name": "tf_cpu",
+      "image_name": "tensorflow/tensorflow:1.1.0",
+      "description": "This is tf",
+      "virtual_host": "tf.services.dev"
     }
   ]
 }

@@ -4,7 +4,7 @@ from flask import Flask, request, Response, render_template
 from flask_socketio import SocketIO, emit
 from utils import Utils, AdvancedUtils
 
-async_mode = "eventlet"
+async_mode = None
 
 app = Flask(__name__)
 app.static_url_path = ''

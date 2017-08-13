@@ -76,13 +76,13 @@ class AdvancedUtils(object):
                     elif j_line['status'] == 'Downloading':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        j_id_status[j_id] = ['Downloading', progress_val]
+                        j_id_status[j_id] = ['Downloading', round(progress_val, 2)]
                     elif j_line['status'] == 'Download complete':
                         j_id_status[j_id] = ['Download complete', 100]
                     elif j_line['status'] == 'Extracting':
                         j_progress_details = j_line['progressDetail']
                         progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                        j_id_status[j_id] = ['Extracting', progress_val]
+                        j_id_status[j_id] = ['Extracting', round(progress_val, 2)]
                     elif j_line['status'] == 'Pull complete':
                         j_id_status[j_id] = ['Pull complete', 100]
                     yield j_id_status
