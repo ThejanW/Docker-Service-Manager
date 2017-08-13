@@ -1,21 +1,21 @@
-$(document).ready(function () {
+var general_socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/general');
+var pull_logs_socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/pull_logs');
 
+$(document).ready(function () {
     //hide individual service pages at startup, only show the services summary table
     $('[id^=service_]').hide();
 
     //hide container pull logs at the startup
     $('[id^=container_pull_logs_]').hide();
 
-    namespace = '/test';
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-
-    socket.on('log_run_status', function (msg) {
+    general_socket.on('log_run_status', function (msg) {
         var service = msg.service;
         var status = msg.status;
         var status_service = $('#status_' + service);
-
         var status_service_btn = $('#status_btn_' + service);
+
         status_service.text(status);
+
         if (status == "STOPPED") {
             // change button text to start
             status_service_btn.text("START");
@@ -42,8 +42,9 @@ $(document).ready(function () {
         }
     });
 
-    socket.on('initialization', function (msg) {
+    general_socket.on('initialization', function (msg) {
         var service_init = $('#init');
+
         if (msg.status == "SUCCESS") {
             service_init.removeClass(function (index, className) {
                 return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
@@ -58,10 +59,8 @@ $(document).ready(function () {
         }
     });
 
-    namespace_build = '/build';
-    var socket_build = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace_build);
 
-    socket_build.on('log_build_status', function (msg) {
+    pull_logs_socket.on('log_build_status', function (msg) {
         var logs = JSON.parse(msg.data);
         var name = msg.name;
 
@@ -117,19 +116,16 @@ function showService(service) {
 
 // start, stop a container or pull an image
 function doAction(name, image_name, virtual_host, object) {
-    namespace = '/test';
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-
     if ($(object).text() == "START") {
-        socket.emit('start', {image_name: image_name, virtual_host: virtual_host});
+        general_socket.emit('start', {image_name: image_name, virtual_host: virtual_host});
     }
     else if ($(object).text() == "STOP") {
-        socket.emit('stop', {image_name: image_name});
+        general_socket.emit('stop', {image_name: image_name});
     }
     else if ($(object).text() == "PULL") {
         //show container pull logs
         $('#container_pull_logs_' + name).show();
-        socket.emit('pull', {image_name: image_name, name: name});
+        general_socket.emit('pull', {image_name: image_name, name: name});
     }
     return false;
 }

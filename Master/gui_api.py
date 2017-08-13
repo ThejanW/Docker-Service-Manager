@@ -4,14 +4,11 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from utils import Utils, AdvancedUtils
 
-async_mode = None
-
 app = Flask(__name__)
 app.static_url_path = ''
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode, async_handlers=True)
+socketio = SocketIO(app, async_mode=None, async_handlers=True)
 thread = None
-thread1 = None
 
 with open('dsm-config.json') as config_file:
     configs = json.load(config_file)
@@ -27,62 +24,60 @@ def index():
     return render_template('index.html', services=configs['services'])
 
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect', namespace='/general')
 def on_connect():
     global thread
     if thread is None:
-        thread = socketio.start_background_task(target=background_thread)
+        thread = socketio.start_background_task(target=bg_thread)
     emit('log_run_status', {'data': 'Connected'})
 
 
-def background_thread():
+def bg_thread():
     reverse_proxy = configs["reverse_proxy"]
     reverse_proxy_image_name = "{0}:{1}".format(reverse_proxy["name"], reverse_proxy["version"])
+    reverse_proxy_volumes = reverse_proxy["volumes"]
+    reverse_proxy_ports = reverse_proxy["ports"]
     services = configs["services"]
     while True:
         socketio.sleep(2)
-        if utils.search_container(reverse_proxy_image_name):
-            utils.start_nginx()
-            socketio.emit('initialization', {'status': "SUCCESS"}, namespace='/test')
+        if utils.search_container(image_name=reverse_proxy_image_name):
+            utils.start_reverse_proxy(image_name=reverse_proxy_image_name,
+                                      volumes=reverse_proxy_volumes,
+                                      ports=reverse_proxy_ports)
+            socketio.emit('initialization', {'status': "SUCCESS"}, namespace='/general')
             for service in services:
                 socketio.emit('log_run_status',
                               {'service': "{0}".format(service["name"]),
-                               'status': "{0}".format(utils.check_status(service["image_name"]))},
-                              namespace='/test')
+                               'status': "{0}".format(utils.check_status(image_name=service["image_name"]))},
+                              namespace='/general')
         else:
-            socketio.emit('initialization', {'status': "INITIALIZATION FAILED"}, namespace='/test')
+            socketio.emit('initialization', {'status': "INITIALIZATION FAILED"}, namespace='/general')
 
 
-@socketio.on('start', namespace='/test')
+@socketio.on('start', namespace='/general')
 def start(message):
     image_name = message['image_name']
     virtual_host = message['virtual_host']
-    stopped = utils.stop_containers(image_name)
-    started = utils.start_container(image_name=image_name, virtual_host=virtual_host)
-    if stopped & started:
-        emit('my_response',
-             {'data': 'just started {0}'.format(image_name)})
+    utils.stop_containers(image_name=image_name)
+    utils.start_container(image_name=image_name, virtual_host=virtual_host)
 
 
-@socketio.on('stop', namespace='/test')
+@socketio.on('stop', namespace='/general')
 def stop(message):
     image_name = message['image_name']
-    stopped = utils.stop_containers(image_name)
-    if stopped:
-        emit('my_response',
-             {'data': 'just stopped {0}'.format(image_name)})
+    utils.stop_containers(image_name=image_name)
 
 
-@socketio.on('pull', namespace='/test')
+@socketio.on('pull', namespace='/general')
 def pull(message):
     image_name = message['image_name']
     name = message['name']
-    for out in adv_utils.pull_container_from_hub(image_name):
+    for out in adv_utils.pull_container_from_hub(image_name=image_name):
         socketio.sleep(0)
         print(json.dumps(out))
-        socketio.emit('log_build_status', {'data': json.dumps(out), 'name': name}, namespace='/build')
+        socketio.emit('log_build_status', {'data': json.dumps(out), 'name': name}, namespace='/pull_logs')
         if out == 'False':
-            emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/build')
+            emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/pull_logs')
 
 
 if __name__ == '__main__':

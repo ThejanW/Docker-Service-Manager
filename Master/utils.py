@@ -45,12 +45,10 @@ class Utils(object):
     def get_container_ids(self, image_name):
         return self.client.containers.list(filters={'ancestor': image_name})
 
-    def start_nginx(self, image_name='jwilder/nginx-proxy:0.4.0'):
+    def start_reverse_proxy(self, image_name, volumes, ports):
         try:
             if self.check_status(image_name) != 'RUNNING':
-                self.client.containers.run(image_name, detach=True,
-                                           volumes={'/var/run/docker.sock': {'bind': '/tmp/docker.sock', 'mode': 'ro'}},
-                                           ports={'80/tcp': 8764})
+                self.client.containers.run(image_name, detach=True, volumes=volumes, ports=ports)
             return True
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
             return False
