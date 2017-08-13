@@ -42,7 +42,7 @@ $(document).ready(function () {
         }
     });
 
-    general_socket.on('initialization', function (msg) {
+    general_socket.on('log_init_status', function (msg) {
         var service_init = $('#init');
 
         if (msg.status == "SUCCESS") {
@@ -60,7 +60,7 @@ $(document).ready(function () {
     });
 
 
-    pull_logs_socket.on('log_build_status', function (msg) {
+    pull_logs_socket.on('log_pull_status', function (msg) {
         var logs = JSON.parse(msg.data);
         var name = msg.name;
 

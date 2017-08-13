@@ -29,7 +29,6 @@ def on_connect():
     global thread
     if thread is None:
         thread = socketio.start_background_task(target=bg_thread)
-    emit('log_run_status', {'data': 'Connected'})
 
 
 def bg_thread():
@@ -44,14 +43,14 @@ def bg_thread():
             utils.start_reverse_proxy(image_name=reverse_proxy_image_name,
                                       volumes=reverse_proxy_volumes,
                                       ports=reverse_proxy_ports)
-            socketio.emit('initialization', {'status': "SUCCESS"}, namespace='/general')
+            socketio.emit('log_init_status', {'status': "SUCCESS"}, namespace='/general')
             for service in services:
                 socketio.emit('log_run_status',
                               {'service': "{0}".format(service["name"]),
                                'status': "{0}".format(utils.check_status(image_name=service["image_name"]))},
                               namespace='/general')
         else:
-            socketio.emit('initialization', {'status': "INITIALIZATION FAILED"}, namespace='/general')
+            socketio.emit('log_init_status', {'status': "INITIALIZATION FAILED"}, namespace='/general')
 
 
 @socketio.on('start', namespace='/general')
@@ -75,9 +74,7 @@ def pull(message):
     for out in adv_utils.pull_container_from_hub(image_name=image_name):
         socketio.sleep(0)
         print(json.dumps(out))
-        socketio.emit('log_build_status', {'data': json.dumps(out), 'name': name}, namespace='/pull_logs')
-        if out == 'False':
-            emit('log_build_status', {'data': 'Couldn\'t Pull Image, Try Again Later'}, namespace='/pull_logs')
+        socketio.emit('log_pull_status', {'data': json.dumps(out), 'name': name}, namespace='/pull_logs')
 
 
 if __name__ == '__main__':
