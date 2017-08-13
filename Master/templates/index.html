@@ -43,7 +43,7 @@
     <header class="main-header">
 
         <!-- Logo -->
-        <a href="javascript:void(null);" onclick="goHome()" class="logo">
+        <a href="javascript:void(null);" onclick="showHome()" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>D|S|M</b></span>
             <!-- logo for regular state and mobile devices -->
@@ -153,7 +153,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <a href="javascript:void(null);" id="status_btn_{{service.name}}"
-                           onclick="doAction('{{service.name}}', '{{service.image_name}}', '{{service.virtual_host}}', this)"
+                           onclick="getAction('{{service.name}}', '{{service.image_name}}', '{{service.virtual_host}}', this)"
                            class="btn btn-primary btn-block margin-bottom">START</a>
                     </div>
                     <!-- /.col -->
@@ -204,16 +204,6 @@
     </div>
     <!-- /.Service -->
     {% endfor %}
-
-    <!-- Main Footer -->
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="pull-right hidden-xs">
-            Anything you want
-        </div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-    </footer>
 </div>
 <!-- ./wrapper -->
 
@@ -225,11 +215,7 @@
 <script src="{{ url_for('static', filename='adminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ url_for('static', filename='adminLTE/dist/js/adminlte.min.js') }}"></script>
-
+<!--activity-->
 <script src="{{ url_for('static', filename='js/activity.js') }}"></script>
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
- Both of these plugins are recommended to enhance the
- user experience. -->
 </body>
-
 </html>

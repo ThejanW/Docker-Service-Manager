@@ -1,5 +1,5 @@
-var general_socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/general');
-var pull_logs_socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/pull_logs');
+var GENERAL_SOCKET = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/general');
+var PULL_LOGS_SOCKET = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/pull_logs');
 
 $(document).ready(function () {
     //hide individual service pages at startup, only show the services summary table
@@ -8,7 +8,7 @@ $(document).ready(function () {
     //hide container pull logs at the startup
     $('[id^=container_pull_logs_]').hide();
 
-    general_socket.on('log_run_status', function (msg) {
+    GENERAL_SOCKET.on('log_run_status', function (msg) {
         var service = msg.service;
         var status = msg.status;
         var status_service = $('#status_' + service);
@@ -19,6 +19,8 @@ $(document).ready(function () {
         if (status == "STOPPED") {
             // change button text to start
             status_service_btn.text("START");
+            //enable button in case its disabled while pulling
+            status_service_btn.attr("disabled", false);
             // hide pulling logs if there're any
             $('#container_pull_logs_' + service).hide();
             status_service.removeClass(function (index, className) {
@@ -28,6 +30,8 @@ $(document).ready(function () {
         else if (status == "RUNNING") {
             // change button text to stop
             status_service_btn.text("STOP");
+            //enable button in case its disabled while pulling
+            status_service_btn.attr("disabled", false);
             // hide pulling logs if there're any
             $('#container_pull_logs_' + service).hide();
             status_service.removeClass(function (index, className) {
@@ -35,6 +39,7 @@ $(document).ready(function () {
             }).addClass('label-success');
         }
         else if (status == "NOT AVAILABLE") {
+            // change button text to pull
             status_service_btn.text("PULL");
             status_service.removeClass(function (index, className) {
                 return (className.match(/(^|\s)label-\S+/g) || []).join(' ');
@@ -42,7 +47,8 @@ $(document).ready(function () {
         }
     });
 
-    general_socket.on('log_init_status', function (msg) {
+    GENERAL_SOCKET.on('log_init_status', function (msg) {
+        // service initialization flag in home
         var service_init = $('#init');
 
         if (msg.status == "SUCCESS") {
@@ -59,7 +65,7 @@ $(document).ready(function () {
         }
     });
 
-    pull_logs_socket.on('log_pull_status', function (msg) {
+    PULL_LOGS_SOCKET.on('log_pull_status', function (msg) {
         var logs = JSON.parse(msg.data);
         var name = msg.name;
 
@@ -100,7 +106,7 @@ $('#service-list').on('click', 'li', function () {
 });
 
 // hide individual services, show services summary table
-function goHome() {
+function showHome() {
     $('#service-list').children().removeClass('active');
     $('#home').show();
     $('[id^=service_]').hide();
@@ -114,17 +120,22 @@ function showService(service) {
 }
 
 // start, stop a container or pull an image
-function doAction(name, image_name, virtual_host, object) {
+function getAction(name, image_name, virtual_host, object) {
     if ($(object).text() == "START") {
-        general_socket.emit('start', {image_name: image_name, virtual_host: virtual_host});
+        // if start button is clicked, emit start
+        GENERAL_SOCKET.emit('start', {image_name: image_name, virtual_host: virtual_host});
     }
     else if ($(object).text() == "STOP") {
-        general_socket.emit('stop', {image_name: image_name});
+        // if stop button is clicked, emit stop
+        GENERAL_SOCKET.emit('stop', {image_name: image_name});
     }
     else if ($(object).text() == "PULL") {
+        //disable button to avoid clicking PULL button multiple times
+        $(object).attr("disabled", true);
         //show container pull logs
         $('#container_pull_logs_' + name).show();
-        general_socket.emit('pull', {image_name: image_name, name: name});
+        // if pull button is clicked, emit pull
+        GENERAL_SOCKET.emit('pull', {image_name: image_name, name: name});
     }
     return false;
 }
