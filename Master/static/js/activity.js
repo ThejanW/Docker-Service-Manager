@@ -45,25 +45,30 @@ $(document).ready(function () {
 
         for (var key in logs) {
             if (logs.hasOwnProperty(key)) {
+                var div_name = "progress_" + name + "_" + key;
+                var div_name_progress_text = div_name + '_progress_text';
+                var div_name_progress_number = div_name + '_progress_number';
+                var div_name_progress_bar = div_name + '_progress_bar';
+
                 if (logs[key][0] == "Pulling fs layer") {
-                    // if doesn't exist
-                    var div_name = "#progress_" + name + "_" + key;
-                    if (document.getElementById(div_name)) {
-                        console.log("already exists");
-                    }
-                    else {
+                    // if doesn't exist append a new progress bar
+                    if (!(document.getElementById(div_name))) {
                         $("#progress_bar_" + name).append(
                             '<div class="progress-group" id=' + div_name + '>\
-                                <span class="progress-text">Add Products to Cart</span>\
-                                <span class="progress-number"><b>160</b>/200</span>\
+                                <span class="progress-text" id=' + div_name_progress_text + '>Pulling fs layer</span>\
+                                <span class="progress-number" id =' + div_name_progress_number + '><b>0/100</b></span>\
                                 <div class="progress sm">\
-                                    <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>\
+                                    <div class="progress-bar progress-bar-aqua" id=' + div_name_progress_bar + '></div>\
                                 </div>\
                              </div>\
                         ');
                     }
                 }
-                console.log(logs[key]);
+                else {
+                    $("#" + div_name_progress_text).text(logs[key][0]);
+                    $("#" + div_name_progress_number + " b").text(logs[key][1] + "/100");
+                    $("#" + div_name_progress_bar).css("width", logs[key][1] + "%");
+                }
             }
         }
     });
