@@ -13,8 +13,10 @@ RUN \
     git clone https://github.com/ThejanW/Docker-Service-Manager.git
 WORKDIR /usr/share/Docker-Service-Manager/Master/
 RUN chmod +x gui_api.py
+ENV PATH="$PATH:/usr/share/Docker-Service-Manager/Master"
+WORKDIR /
 # In case we need to change the DOCKER_HOST
 # ENV DOCKER_HOST unix:///tmp/docker.sock
 # expose API port, this is the default port
 EXPOSE 8765
-CMD python3 gui_api.py
+CMD gui_api.py
