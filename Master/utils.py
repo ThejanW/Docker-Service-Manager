@@ -71,14 +71,22 @@ class AdvancedUtils(object):
                             j_id_status[j_id] = ['Pulling fs layer', 0]
                         elif j_line['status'] == 'Downloading':
                             j_progress_details = j_line['progressDetail']
-                            progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                            j_id_status[j_id] = ['Downloading', round(progress_val, 2)]
+                            # sometimes this dict becomes empty or miss keys
+                            if 'current' in j_progress_details and 'total' in j_progress_details:
+                                progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                                j_id_status[j_id] = ['Downloading', round(progress_val, 2)]
+                            else:
+                                j_id_status[j_id] = ['Downloading', 0]
                         elif j_line['status'] == 'Download complete':
                             j_id_status[j_id] = ['Download complete', 100]
                         elif j_line['status'] == 'Extracting':
                             j_progress_details = j_line['progressDetail']
-                            progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
-                            j_id_status[j_id] = ['Extracting', round(progress_val, 2)]
+                            # sometimes this dict becomes empty or miss keys
+                            if 'current' in j_progress_details and 'total' in j_progress_details:
+                                progress_val = j_progress_details['current'] * 100 / j_progress_details['total']
+                                j_id_status[j_id] = ['Extracting', round(progress_val, 2)]
+                            else:
+                                j_id_status[j_id] = ['Extracting', 0]
                         elif j_line['status'] == 'Pull complete':
                             j_id_status[j_id] = ['Pull complete', 100]
                         yield j_id_status

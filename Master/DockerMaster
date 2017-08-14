@@ -17,4 +17,4 @@ RUN chmod +x gui_api.py
 # ENV DOCKER_HOST unix:///tmp/docker.sock
 # expose API port, this is the default port
 EXPOSE 8765
-CMD gui_api.py
+CMD python3 gui_api.py
