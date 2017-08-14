@@ -76,4 +76,4 @@ def pull(message):
 if __name__ == '__main__':
     port = configs["dsm_port"]
     print("Serving on port %s" % port)
-    socket_io.run(app, port=int(port))
+    socket_io.run(app, host='0.0.0.0', port=int(port))

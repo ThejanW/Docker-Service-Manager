@@ -1,24 +1,20 @@
-FROM alpine:3.6
+FROM ubuntu:16.04
 MAINTAINER ThejanW
-RUN apk add --no-cache python3 && \
-    python3 -m ensurepip && \
+RUN \
+    apt-get update && \
+    apt-get install -y \
+    python3-pip \
+    python3-dev \
     git && \
-    rm -r /usr/lib/python*/ensurepip && \
-    pip3 install --upgrade pip setuptools && \
-    rm -r /root/.cache
-#install python dependencies
-RUN pip3 install flask flask_socketio docker
+    pip3 install flask flask_socketio gevent gevent-websocket eventlet docker
 # Download server related source files
 WORKDIR /usr/share/
-RUN apk add --no-cache --virtual .bootstrap-deps wget ca-certificates && \
-    git clone https://github.com/ThejanW/Docker-Service-Manager.git && \
-    chmod +x Docker-Service-Manager/Master/gui_api.py && \
-    apk del .bootstrap-deps
-WORKDIR /
+RUN \
+    git clone https://github.com/ThejanW/Docker-Service-Manager.git
+WORKDIR /usr/share/Docker-Service-Manager/Master/
+RUN chmod +x gui_api.py
 # In case we need to change the DOCKER_HOST
 # ENV DOCKER_HOST unix:///tmp/docker.sock
-# Add symbolic link to app1.py
-RUN ln -s /usr/share/Docker-Service-Manager/Master/gui_api.py /usr/bin/gui_api
 # expose API port, this is the default port
 EXPOSE 8765
-CMD gui_api
+CMD gui_api.py
