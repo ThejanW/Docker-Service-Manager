@@ -69,6 +69,7 @@ def pull(message):
     name = message['name']
     for out in adv_utils.pull_container_from_hub(image_name=image_name):
         socket_io.sleep(0)
+        print(json.dumps(out))
         socket_io.emit('log_pull_status', {'data': json.dumps(out), 'name': name}, namespace='/pull_logs')
 
 

@@ -1,47 +1,24 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-FROM ubuntu:16.04
+FROM alpine:3.6
 MAINTAINER ThejanW
-RUN \
-    apt-get update && \
-    apt-get install -y \
-    python3-pip \
-    python3-dev \
-    wget \
-    nano && \
-    pip3 install \
-    flask \
-    requests \
-    docker
-
-# ENV DOCKER_HOST unix:///tmp/docker.sock
-
+RUN apk add --no-cache python3 && \
+    python3 -m ensurepip && \
+    git && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    rm -r /root/.cache
+#install python dependencies
+RUN pip3 install flask flask_socketio docker
 # Download server related source files
-WORKDIR /usr/share/apache-tika/src/dl/Master/
-RUN \
-    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/Master/gui_api.py -O gui_api.py && \
-    wget https://raw.githubusercontent.com/ThejanW/REST_Unification_Demo/master/Master/utils.py -O utils.py && \
-    chmod +x gui_api.py
+WORKDIR /usr/share/
+RUN apk add --no-cache --virtual .bootstrap-deps wget ca-certificates && \
+    git clone https://github.com/ThejanW/Docker-Service-Manager.git && \
+    chmod +x Docker-Service-Manager/Master/gui_api.py && \
+    apk del .bootstrap-deps
 WORKDIR /
-
-# Add symbolic link to gui_api.py
-RUN ln -s /usr/share/apache-tika/src/dl/Master/gui_api.py /usr/bin/gui_api
-
+# In case we need to change the DOCKER_HOST
+# ENV DOCKER_HOST unix:///tmp/docker.sock
+# Add symbolic link to app1.py
+RUN ln -s /usr/share/Docker-Service-Manager/Master/gui_api.py /usr/bin/gui_api
 # expose API port, this is the default port
 EXPOSE 8765
 CMD gui_api
