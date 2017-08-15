@@ -11,7 +11,8 @@ class Utils(object):
     def stop_containers(self, image_name):
         try:
             container_ids = self.client.containers.list(filters={'ancestor': image_name})
-            for container_id in container_ids: container_id.remove(force=True)
+            for container_id in container_ids:
+                container_id.remove(force=True)
             return True
         except docker.errors.APIError:
             return False
@@ -21,6 +22,15 @@ class Utils(object):
             self.client.containers.run(image_name, detach=True, environment={'VIRTUAL_HOST': virtual_host})
             return True
         except (docker.errors.ContainerError, docker.errors.ImageNotFound, docker.errors.APIError):
+            return False
+
+    def update_container_not_to_restart(self, image_name):
+        try:
+            container_ids = self.client.containers.list(filters={'ancestor': image_name})
+            for container_id in container_ids:
+                container_id.update(restart_policy=None)
+            return True
+        except docker.errors.APIError:
             return False
 
     def search_container(self, image_name):

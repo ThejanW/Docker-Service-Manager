@@ -84,6 +84,7 @@ def pull(message):
 
 @SOCKET_IO.on('disconnect', namespace='/general')
 def on_disconnect():
+    UTILS.update_container_not_to_restart(image_name=REVERSE_PROXY_IMAGE_NAME)
     UTILS.stop_containers(image_name=REVERSE_PROXY_IMAGE_NAME)
     for service in SERVICES:
         UTILS.stop_containers(image_name=service["image_name"])
