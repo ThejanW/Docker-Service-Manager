@@ -23,22 +23,22 @@
   },
   "services": [
     {
-      "name": "image-object_recognition",
+      "name": "object_recognition-image",
       "image_name": "thejanw/inception-rest-tika",
       "description": "This is a classifier service that can classify images",
-      "virtual_host": "image-object_recognition.tika.dl"
+      "virtual_host": "object_recognition-image.tika.dl"
     },
     {
-      "name": "video-object_recognition",
-      "image_name": "thejanw/inception-video-rest-tika",
+      "name": "object_recognition-video",
+      "image_name": "theja/inception-video-rest-tika",
       "description": "This is a classifier service that can classify videos",
-      "virtual_host": "video-object_recognition.tika.dl"
+      "virtual_host": "object_recognition-video.tika.dl"
     },
     {
-      "name": "image-captioning",
+      "name": "captioning-image",
       "image_name": "thejanw/im2txt-rest-tika",
       "description": "This is a service that can caption images",
-      "virtual_host": "image-captioning.tika.dl"
+      "virtual_host": "captioning-image.tika.dl"
     }
   ]
 }
