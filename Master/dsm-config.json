@@ -23,28 +23,22 @@
   },
   "services": [
     {
-      "name": "demo_service1",
-      "image_name": "thejanw/demo-service1",
-      "description": "This is demo service 1",
-      "virtual_host": "service1.services.dev"
+      "name": "image-object_recognition",
+      "image_name": "thejanw/inception-rest-tika",
+      "description": "This is a classifier service that can classify images",
+      "virtual_host": "image-object_recognition.tika.dl"
     },
     {
-      "name": "demo_service2",
-      "image_name": "thejanw/demo-service2",
-      "description": "This is demo service 2",
-      "virtual_host": "service2.services.dev"
+      "name": "video-object_recognition",
+      "image_name": "thejanw/inception-video-rest-tika",
+      "description": "This is a classifier service that can classify videos",
+      "virtual_host": "video-object_recognition.tika.dl"
     },
     {
-      "name": "demo_service3",
-      "image_name": "thejanw/demo-service3",
-      "description": "This is demo service 3",
-      "virtual_host": "service3.services.dev"
-    },
-    {
-      "name": "tf_cpu",
-      "image_name": "tensorflow/tensorflow:1.1.0",
-      "description": "This is tf",
-      "virtual_host": "tf.services.dev"
+      "name": "image-captioning",
+      "image_name": "thejanw/im2txt-rest-tika",
+      "description": "This is a service that can caption images",
+      "virtual_host": "image-captioning.tika.dl"
     }
   ]
 }
