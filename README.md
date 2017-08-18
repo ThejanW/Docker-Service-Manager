@@ -18,7 +18,7 @@ Then head to http://localhost:8765/ and you will see a web GUI similar to this.
 
 ![alt text](https://raw.githubusercontent.com/ThejanW/Docker-Service-Manager/master/imgs/dsm-service-summary.png)
 
-If you don't have these images in your machine, you'll have to pull them by heading to the relevant tab in the SERVICES pane. 
+If you don't have the images specified in the dsm-config.json in your machine, you'll have to pull them by heading to the relevant tab in the SERVICES pane. 
 You will see the pulling progress in real time. 
 
 ![alt text](https://raw.githubusercontent.com/ThejanW/Docker-Service-Manager/master/imgs/dsm-pulling-image.png)
@@ -35,7 +35,7 @@ you will get the index page of each service.
 
 # TODO
 
-1. The current automated reverse proxy I'm using doesn't support does not support VIRTUAL_PATH although it supports VIRTUAL_HOST. 
+1. The current automated reverse proxy I'm using doesn't support support VIRTUAL_PATHs although it supports VIRTUAL_HOSTs, 
 Therefore I can’t proxy into the url paths in the server back ends. 
 I found a possible alternative to this. Let’s see how it goes. 
 
