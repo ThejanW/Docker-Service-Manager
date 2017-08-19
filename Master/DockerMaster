@@ -6,7 +6,8 @@ RUN \
     python3-pip \
     python3-dev \
     git && \
-    pip3 install flask flask_socketio gevent gevent-websocket eventlet docker
+    pip3 install flask flask_socketio gevent gevent-websocket eventlet docker && \
+    apt-get clean
 # Download server related source files
 WORKDIR /usr/share/
 RUN \
