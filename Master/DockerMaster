@@ -10,6 +10,8 @@ RUN \
 # Download server related source files
 WORKDIR /usr/share/
 RUN \
+    # To get rid of early EOF error
+    git config --global http.postBuffer 1048576000 && \
     git clone https://github.com/ThejanW/Docker-Service-Manager.git
 WORKDIR /usr/share/Docker-Service-Manager/Master/
 RUN chmod +x gui_api.py
