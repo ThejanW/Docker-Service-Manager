@@ -15,6 +15,10 @@
       "/var/run/docker.sock": {
         "bind": "/tmp/docker.sock",
         "mode": "ro"
+      },
+      "/usr/share/Docker-Service-Manager/Master/nginx.tmpl": {
+        "bind": "/app/nginx.tmpl",
+        "mode": "ro"
       }
     },
     "ports": {
@@ -23,22 +27,22 @@
   },
   "services": [
     {
-      "name": "object_recognition-image",
+      "name": "recognition-image",
       "image_name": "thejanw/inception-rest-tika",
       "description": "This is a classifier service that can classify images",
-      "virtual_host": "object_recognition-image.tika.dl"
+      "virtual_host": "recognition-image.tika.dl"
     },
     {
-      "name": "object_recognition-video",
+      "name": "recognition-video",
       "image_name": "thejanw/inception-video-rest-tika",
       "description": "This is a classifier service that can classify videos",
-      "virtual_host": "object_recognition-video.tika.dl"
+      "virtual_host": "recognition-video.tika.dl"
     },
     {
-      "name": "captioning-image",
+      "name": "caption-image",
       "image_name": "thejanw/im2txt-rest-tika",
       "description": "This is a service that can caption images",
-      "virtual_host": "captioning-image.tika.dl"
+      "virtual_host": "caption-image.tika.dl"
     }
   ]
 }
