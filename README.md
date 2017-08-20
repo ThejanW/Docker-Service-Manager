@@ -8,7 +8,7 @@ A tool to manage &amp; monitor containerized web applications
 
 2. Pull the automated reverse proxy image from DockerHub,
 
-`docker pull jwilder/nginx-proxy:0.6.0`
+`docker pull thejanw/nginx-proxy`
 
 3. Run Docker Service Manager,
 
