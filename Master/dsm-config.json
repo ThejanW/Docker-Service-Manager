@@ -9,15 +9,11 @@
   "dsm_port": "8765",
   "base_url": "unix://var/run/docker.sock",
   "reverse_proxy": {
-    "name": "jwilder/nginx-proxy",
-    "version": "0.6.0",
+    "name": "thejanw/nginx-proxy",
+    "version": "latest",
     "volumes": {
       "/var/run/docker.sock": {
         "bind": "/tmp/docker.sock",
-        "mode": "ro"
-      },
-      "/usr/share/Docker-Service-Manager/Master/nginx.tmpl": {
-        "bind": "/app/nginx.tmpl",
         "mode": "ro"
       }
     },
