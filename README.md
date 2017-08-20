@@ -12,7 +12,7 @@ A tool to manage &amp; monitor containerized web applications
 
 3. Run Docker Service Manager,
 
-`docker run -it -p 8765:8765 -v /var/run/docker.sock:/var/run/docker.sock:ro thejanw/docker-service-manager`
+`docker run -d -p 8765:8765 -v /var/run/docker.sock:/var/run/docker.sock:ro thejanw/docker-service-manager`
 
 4. Head to http://localhost:8765/ and you will see the DSM dashboard,
 
